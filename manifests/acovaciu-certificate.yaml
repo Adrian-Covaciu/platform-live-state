@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: acovaciu-wildcard-cert
+  namespace: traefik-ingress
+spec:
+  secretName: acovaciu-wildcard-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "*.acovaciu.com"
+  dnsNames:
+  - "acovaciu.com"
+  - "*.acovaciu.com"
