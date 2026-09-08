@@ -33,6 +33,7 @@ resource "aws_kms_key" "eks" {
 }
 
 resource "aws_eks_cluster" "this" {
+  #checkov:skip=CKV_AWS_39:Public endpoint required for kubectl access from outside the VPC (no bastion/VPN); access is restricted via eks_public_access_cidrs, see CKV_AWS_38
   name     = var.cluster_name
   role_arn = aws_iam_role.cluster.arn
   version  = var.kubernetes_version
