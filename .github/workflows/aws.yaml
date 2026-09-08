@@ -14,7 +14,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # Shared with aws-destroy.yaml's group so plan/apply can never run alongside destroy
+  # against the same state (the S3 backend has no DynamoDB lock table configured).
+  group: terraform-aws-state
   cancel-in-progress: false
 
 jobs:
