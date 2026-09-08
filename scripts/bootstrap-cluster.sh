@@ -47,8 +47,3 @@ echo "ArgoCD is ready. Username: admin"
 echo "Get the initial admin password with:"
 echo "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d"
 
-
-## put in terraform
-kubectl create secret generic cloudflare-api-token-secret \
-  --namespace cert-manager \
-  --from-literal=api-token="cfat_IAi04dSeTRYycjAL0m6oDBpOatoV4pm8Wri92mMU205d7e26"
