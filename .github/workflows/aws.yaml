@@ -17,6 +17,9 @@ jobs:
   terraform-scan:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Terraform Scan & Validate
         uses: ./.github/actions/terraform-scan
         with:
@@ -26,6 +29,9 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Terraform setup
         uses: ./.github/actions/terraform-aws
         with:
@@ -36,7 +42,7 @@ jobs:
 
       - name: Terraform plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform plan -out plan.out2
+        run: terraform plan -out plan.out
 
       - name: Upload plan
         uses: actions/upload-artifact@v4
@@ -49,6 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: aws
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Terraform setup
         uses: ./.github/actions/terraform-aws
         with:
