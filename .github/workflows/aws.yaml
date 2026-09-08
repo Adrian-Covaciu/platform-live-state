@@ -1,4 +1,4 @@
-name: AWS OIDCS Pipeline
+name: AWS OIDC Pipeline
 
 on:
   workflow_dispatch:
