@@ -20,7 +20,7 @@ variable "kubernetes_version" {
 variable "eks_public_access_cidrs" {
   type        = list(string)
   description = "CIDR blocks allowed to reach the EKS public API endpoint. Required (no default) so a real value must be supplied at apply time — never falls back to 0.0.0.0/0 by accident."
-  default     = "109.97.42.231/32"
+  default     = ["109.97.42.231/32"]
 }
 
 variable "vpc_cidr" {
