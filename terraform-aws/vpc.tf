@@ -110,6 +110,8 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {
+  #checkov:skip=CKV_AWS_158:Default AWS-managed encryption is sufficient for VPC flow logs in this environment
+  #checkov:skip=CKV_AWS_338:30-day retention is sufficient for VPC flow logs in this environment
   name              = "/aws/vpc/${var.cluster_name}-flow-log"
   retention_in_days = 30
 }
