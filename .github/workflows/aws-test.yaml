@@ -1,4 +1,4 @@
-name: Test AWS OIDC Setup
+name: AWS OIDCS Pipeline
 
 on:
   workflow_dispatch:
@@ -12,8 +12,10 @@ permissions:
 jobs:
   test-aws-oidc:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform-aws
     steps:
-
       - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -23,7 +25,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.16.0" 
+          terraform_version: "1.16.0"
 
       - name: Terraform init
         run: terraform init & terraform plan -out plan.out
