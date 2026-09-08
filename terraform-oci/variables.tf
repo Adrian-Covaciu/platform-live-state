@@ -1,9 +1,3 @@
-variable "dns_domain" {
-  type        = string
-  default     = "acovaciu.com"
-  description = "Domain for application"
-}
-
 ### OCI Tenant
 variable "region" {
   type        = string
@@ -95,4 +89,18 @@ variable "okta_argocd_client_secret" {
 variable "argocd_chart_version" {
   type    = string
   default = "10.7.1"
+}
+
+### cert-manager / Cloudflare
+
+variable "cloudflare_api_token" {
+  type        = string
+  sensitive   = true
+  description = "Cloudflare API token used by cert-manager for DNS-01 challenges"
+}
+
+variable "dns_domain" {
+  type        = string
+  default     = "acovaciu.com"
+  description = "Domain for application"
 }
