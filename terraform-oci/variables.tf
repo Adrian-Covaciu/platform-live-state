@@ -93,6 +93,6 @@ variable "okta_argocd_client_secret" {
 ### ArgoCD
 
 variable "argocd_chart_version" {
-  type        = string
-  default     = "10.7.1"
+  type    = string
+  default = "10.7.1"
 }
