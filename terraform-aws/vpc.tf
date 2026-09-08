@@ -16,12 +16,20 @@ resource "aws_internet_gateway" "this" {
   }
 }
 
+resource "aws_default_security_group" "this" {
+  vpc_id = aws_vpc.this.id
+  # Intentionally no ingress/egress rules: locks down the default SG. EKS uses its own
+  # managed security groups, so this has no effect on cluster or node traffic.
+}
+
 resource "aws_subnet" "public" {
-  count                   = length(var.public_subnet_cidrs)
-  vpc_id                  = aws_vpc.this.id
-  cidr_block              = var.public_subnet_cidrs[count.index]
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
-  map_public_ip_on_launch = true
+  count             = length(var.public_subnet_cidrs)
+  vpc_id            = aws_vpc.this.id
+  cidr_block        = var.public_subnet_cidrs[count.index]
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+  # No auto-assigned public IPs: the NAT Gateway gets its own EIP, and worker nodes run
+  # in the private subnets, so nothing here needs a public IP by default.
+  map_public_ip_on_launch = false
 
   tags = {
     Name                                        = "${var.cluster_name}-public-${count.index}"
@@ -99,4 +107,51 @@ resource "aws_route_table_association" "private" {
   count          = length(aws_subnet.private)
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private.id
+}
+
+resource "aws_cloudwatch_log_group" "vpc_flow_log" {
+  name              = "/aws/vpc/${var.cluster_name}-flow-log"
+  retention_in_days = 30
+}
+
+resource "aws_iam_role" "vpc_flow_log" {
+  name = "${var.cluster_name}-vpc-flow-log-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "vpc-flow-logs.amazonaws.com" }
+      Action    = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "vpc_flow_log" {
+  name = "${var.cluster_name}-vpc-flow-log-policy"
+  role = aws_iam_role.vpc_flow_log.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+      ]
+      Resource = "${aws_cloudwatch_log_group.vpc_flow_log.arn}:*"
+    }]
+  })
+}
+
+resource "aws_flow_log" "this" {
+  vpc_id          = aws_vpc.this.id
+  traffic_type    = "ALL"
+  iam_role_arn    = aws_iam_role.vpc_flow_log.arn
+  log_destination = aws_cloudwatch_log_group.vpc_flow_log.arn
+
+  tags = {
+    Name = "${var.cluster_name}-flow-log"
+  }
 }
