@@ -1,11 +1,9 @@
 terraform {
   required_version = ">= 1.16"
 
-  backend "s3" {
-    bucket = "testbucket-611182197776-eu-west-3-an"
-    key    = "terraform.tfstate"
-    region = "eu-west-3"
-  }
+  # Bucket/key/region are supplied per account at init time via -backend-config
+  # (see accounts/<account_id>.backend.hcl) so each AWS account keeps its own state.
+  backend "s3" {}
 
   required_providers {
     aws = {

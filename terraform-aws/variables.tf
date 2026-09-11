@@ -10,6 +10,11 @@ variable "cluster_name" {
   description = "EKS cluster name"
 }
 
+variable "account_id" {
+  type        = string
+  description = "AWS account ID this stack is deployed into (builds the CI role ARN). Required (no default) so every apply explicitly targets one account — supply via -var-file per account."
+}
+
 variable "kubernetes_version" {
   type        = string
   default     = "1.32"

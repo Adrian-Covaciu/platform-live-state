@@ -2,6 +2,15 @@ name: AWS OIDC Pipeline - Destroy
 
 on:
   workflow_dispatch:
+    inputs:
+      account:
+        description: AWS account to destroy
+        type: choice
+        required: true
+        default: "611182197776"
+        options:
+          - "611182197776"
+          - "256156540897"
 
 env:
   TF_VERSION: "1.16.0"
@@ -12,9 +21,7 @@ permissions:
   contents: read
 
 concurrency:
-  # Shared with aws.yaml's group so destroy can never run alongside plan/apply against
-  # the same state (the S3 backend has no DynamoDB lock table configured).
-  group: terraform-aws-state
+  group: terraform-aws-state-${{ inputs.account }}
   cancel-in-progress: false
 
 jobs:
@@ -29,10 +36,11 @@ jobs:
         uses: ./.github/actions/terraform-aws
         with:
           aws-region: eu-west-3
-          role-to-assume: arn:aws:iam::611182197776:role/githubaction-role
+          role-to-assume: arn:aws:iam::${{ inputs.account }}:role/githubaction-role
           terraform-version: ${{ env.TF_VERSION }}
           working-directory: ${{ env.TF_WORKING_DIR }}
+          backend-config: accounts/${{ inputs.account }}.backend.hcl
 
       - name: Terraform destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform destroy -auto-approve
+        run: terraform destroy -var-file=accounts/${{ inputs.account }}.tfvars -auto-approve
