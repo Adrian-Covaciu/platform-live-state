@@ -15,12 +15,6 @@ variable "account_id" {
   description = "AWS account ID this stack is deployed into (builds the CI role ARN). Required (no default) so every apply explicitly targets one account — supply via -var-file per account."
 }
 
-variable "kubernetes_version" {
-  type        = string
-  default     = "1.34"
-  description = "Kubernetes version for the EKS control plane"
-}
-
 ### Networking
 variable "eks_public_access_cidrs" {
   type        = list(string)
@@ -46,7 +40,13 @@ variable "private_subnet_cidrs" {
   description = "CIDR blocks for the private subnets, one per AZ (worker nodes run here); only 2 AZs are used and a single shared NAT Gateway routes their egress to keep cost down"
 }
 
-### Worker nodes
+### EKS
+variable "kubernetes_version" {
+  type        = string
+  default     = "1.34"
+  description = "Kubernetes version for the EKS control plane"
+}
+
 variable "node_instance_type" {
   type        = string
   default     = "t3.small"
@@ -67,6 +67,35 @@ variable "node_min_size" {
 
 variable "node_max_size" {
   type        = number
-  default     = 3
+  default     = 2
   description = "Maximum number of worker nodes (headroom for rolling node group updates)"
+}
+
+variable "addons" {
+  type = list(object({
+    name    = string
+    version = string
+  }))
+  default = [
+    # {
+    #   name    = "vpc-cni"
+    #   version = "v1.22.4-eksbuild.3"
+    # }
+    # {
+    #   name    = "aws-ebs-csi-driver"
+    #   version = "v1.46.0-eksbuild.1"
+    # },
+    {
+      name    = "coredns"
+      version = "v1.13.2-eksbuild.24"
+    },
+    {
+      name    = "kube-proxy"
+      version = "v1.34.6-eksbuild.21"
+    },
+    {
+      name    = "eks-pod-identity-agent"
+      version = "v1.3.10-eksbuild.1"
+    }
+  ]
 }
