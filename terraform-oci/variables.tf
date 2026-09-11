@@ -84,11 +84,32 @@ variable "okta_argocd_client_secret" {
   sensitive   = true
 }
 
-### ArgoCD
+variable "okta_policy_reporter_client_id" {
+  type        = string
+  description = "Kyverno Policy Client ID from Okta"
+}
+
+variable "okta_policy_reporter_client_secret" {
+  type        = string
+  sensitive   = true
+  description = "Kyverno Policy Client Secret from Okta"
+}
+
+### Chart versions
 
 variable "argocd_chart_version" {
   type    = string
   default = "10.7.1"
+}
+
+variable "kyverno_chart_version" {
+  type    = string
+  default = "3.9.0"
+}
+
+variable "kyverno_policy_report_chart_version" {
+  type    = string
+  default = "3.10.0"
 }
 
 ### cert-manager / Cloudflare
