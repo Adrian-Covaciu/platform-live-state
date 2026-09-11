@@ -84,7 +84,7 @@ resource "aws_eks_access_entry" "root_account" {
 
 resource "aws_eks_access_policy_association" "root_account_admin" {
   cluster_name  = aws_eks_cluster.this.name
-  principal_arn = aws_eks_access_entry.github_actions.principal_arn
+  principal_arn = aws_eks_access_entry.root_account.principal_arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 
   access_scope {
