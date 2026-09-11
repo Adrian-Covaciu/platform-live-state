@@ -39,6 +39,9 @@ data:
         - Grafana:
               href: https://grafana.acovaciu.com
               icon: grafana.png
+        - Kyverno Policies:
+              href: https://policy-reporter.acovaciu.com
+              icon: kyverno.png
     - Homelab Infrastructure:
         - Unifi:
               href: https://unifi.ui.com/consoles/0CEA1487257500000000088C04DD000000000900B60600000000674DB356:50129806/network/default/dashboard
@@ -112,6 +115,10 @@ spec:
         - name: homepage
           image: "ghcr.io/gethomepage/homepage:latest"
           imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: "homepage.acovaciu.com"
@@ -152,6 +159,7 @@ spec:
             name: homepage
         - name: logs
           emptyDir: {}
+
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
