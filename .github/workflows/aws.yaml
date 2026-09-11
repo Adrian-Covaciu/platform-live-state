@@ -7,7 +7,7 @@ on:
         description: AWS account to deploy into
         type: choice
         required: true
-        default: "611182197776"
+        default: "256156540897"
         options:
           - "611182197776"
           - "256156540897"
