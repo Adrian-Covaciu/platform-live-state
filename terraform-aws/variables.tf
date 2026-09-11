@@ -17,7 +17,7 @@ variable "account_id" {
 
 variable "kubernetes_version" {
   type        = string
-  default     = "1.32"
+  default     = "1.33"
   description = "Kubernetes version for the EKS control plane"
 }
 
