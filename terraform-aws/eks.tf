@@ -56,17 +56,15 @@ resource "aws_eks_cluster" "this" {
 
   access_config {
     authentication_mode                         = "API_AND_CONFIG_MAP"
-    bootstrap_cluster_creator_admin_permissions = true
+    bootstrap_cluster_creator_admin_permissions = false
   }
 
   depends_on = [aws_iam_role_policy_attachment.cluster_policy]
 }
 
-# API-only auth mode doesn't retroactively grant access on an already-existing cluster,
-# so the CI role needs an explicit access entry to keep managing the cluster.
 resource "aws_eks_access_entry" "github_actions" {
   cluster_name  = aws_eks_cluster.this.name
-  principal_arn = "arn:aws:iam::611182197776:role/githubaction-role"
+  principal_arn = "arn:aws:iam::${var.account_id}:role/githubaction-role"
 }
 
 resource "aws_eks_access_policy_association" "github_actions_admin" {
