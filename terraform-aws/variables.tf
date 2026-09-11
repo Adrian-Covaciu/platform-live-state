@@ -67,6 +67,6 @@ variable "node_min_size" {
 
 variable "node_max_size" {
   type        = number
-  default     = 2
+  default     = 3
   description = "Maximum number of worker nodes (headroom for rolling node group updates)"
 }
