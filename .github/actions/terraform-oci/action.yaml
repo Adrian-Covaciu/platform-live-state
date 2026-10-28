@@ -30,7 +30,7 @@ runs:
         echo "$HOME/bin" >> $GITHUB_PATH
 
     - name: Run OCI Token Exchange Action
-      uses: gtrevorrow/oci-token-exchange-action@v1
+      uses: gtrevorrow/oci-token-exchange-action@v2
       with:
         oidc_client_identifier: ${{ inputs.oidc_client }}
         domain_base_url: ${{ inputs.domain_url }}
