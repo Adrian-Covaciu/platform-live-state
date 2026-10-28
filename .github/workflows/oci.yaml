@@ -41,7 +41,7 @@ jobs:
         with:
           working-directory: ${{ env.TF_WORKING_DIR }}
           terraform-version: ${{ env.TF_VERSION }}
-          oci_region: ${{ emv.REGION }}
+          oci_region: ${{ env.REGION }}
           oidc_client: ${{ secrets.OIDC_CLIENT }}
           domain_url: ${{ secrets.OCI_DOMAIN_URL }}
           oci_tenancy: ${{ secrets.OCI_TENANCY_OCID }}
