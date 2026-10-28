@@ -1,0 +1,48 @@
+name: Terraform setup
+description: Checkout, configure OCI OIDC credentials, install Terraform, and run terraform init
+
+inputs:
+  oidc_client:
+    required: true
+  domain_url:
+    required: true
+  oci_tenancy:
+    required: true
+  oci_region:
+    required: true
+  terraform-version:
+    required: true
+  working-directory:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version: '24'
+
+    - name: Install OCI CLI
+      shell: bash
+      run: |
+        curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash -s -- --accept-all-defaults
+        echo "$HOME/bin" >> $GITHUB_PATH
+
+    - name: Run OCI Token Exchange Action
+      uses: gtrevorrow/oci-token-exchange-action@v1
+      with:
+        oidc_client_identifier: ${{ inputs.oidc_client }}
+        domain_base_url: ${{ inputs.domain_url }}
+        oci_tenancy: ${{ inputs.oci_tenancy }}
+        oci_region: ${{ inputs.oci_region }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform-version }}
+
+    - name: Terraform init
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: terraform init

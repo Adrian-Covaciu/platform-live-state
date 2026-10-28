@@ -11,6 +11,12 @@ variable "namespace" {
   description = "Object storage namespace"
 }
 
+variable "compartment_ocid" {
+  type        = string
+  default     = "ocid1.tenancy.oc1..aaaaaaaaupsdzdb4l6qanep7gq62qabudu3bqruuex2qsqaftxwzrlff5cka"
+  description = "Root compartment of Tenancy"
+}
+
 ### Monitoring
 variable "kube_prometheus_stack_version" {
   type        = string
@@ -54,6 +60,17 @@ variable "cluster_id" {
   type        = string
   default     = "ocid1.cluster.oc1.eu-paris-1.aaaaaaaaug7blqqsr5wjw35yrceiegf3k6ylrmxr2q7a7c623czde334ksta"
   description = "OKE Cluster ID"
+}
+
+variable "public_ip_access" {
+  type        = string
+  default     = "109.97.42.231/32"
+  description = "Public IP for OKE Endpoint"
+}
+
+variable "kubernetes_version" {
+  type = string
+  default = "v1.36.1"
 }
 
 ### Okta
