@@ -30,7 +30,7 @@ jobs:
   #         working-directory: ${{ env.TF_WORKING_DIR }}
 
   plan:
-    needs: terraform-scan
+    # needs: terraform-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
