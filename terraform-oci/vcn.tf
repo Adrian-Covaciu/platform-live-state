@@ -23,9 +23,9 @@ resource "oci_core_service_gateway" "oke_sgw" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.oke_vcn.id
   display_name   = "oke-sgw"
-  
+
   services {
-    service_id = "ocid1.service.oc1.eu-paris-1.aaaaaaaafwyotwbtosc3eimj7ibd6vku4gefufvbradnhdv6vukydma4ainq" 
+    service_id = "ocid1.service.oc1.eu-paris-1.aaaaaaaafwyotwbtosc3eimj7ibd6vku4gefufvbradnhdv6vukydma4ainq"
   }
 }
 
@@ -36,7 +36,7 @@ resource "oci_core_route_table" "public_route_table" {
 
   route_rules {
     destination       = "0.0.0.0/0"
-    destination_type = "CIDR_BLOCK"
+    destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_internet_gateway.oke_ig.id
   }
 }
@@ -48,7 +48,7 @@ resource "oci_core_route_table" "private_route_table" {
 
   route_rules {
     destination       = "0.0.0.0/0"
-    destination_type = "CIDR_BLOCK"
+    destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_nat_gateway.oke_nat.id
   }
 

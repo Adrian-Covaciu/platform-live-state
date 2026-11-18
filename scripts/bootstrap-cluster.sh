@@ -9,20 +9,27 @@ if ! kubectl config current-context | grep -qx "$CLUSTER_NAME"; then
   exit 1
 fi
 
+# Install Gateway API CRDs from the Standard channel.
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
+
+# Install Traefik Resource Definitions:
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.7/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+
+# Install RBAC for Traefik:
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.7/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+
 # Add Traefik Helm repository
 helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
-
-# Install Gateway API CRDs from the Standard channel.
-kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
 
 # Install Traefik configured for kind port-mapping (helm upgrade --install is already idempotent)
 helm upgrade --install traefik traefik/traefik \
   --namespace traefik-ingress \
   --create-namespace \
   --set providers.kubernetesGateway.enabled=true \
-  --set service.type=LoadBalancer \
-  --set "service.annotations.oci\.oraclecloud\.com/load-balancer-type=nlb"
+  --set service.enabled=true \
+  --set "service.annotations.oci\.oraclecloud\.com/load-balancer-type=nlb" \
+  --skip-crds
 
 # Install cert-manager
 helm repo add jetstack https://charts.jetstack.io

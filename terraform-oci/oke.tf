@@ -18,10 +18,11 @@ resource "oci_containerengine_cluster" "oke_cluster" {
   compartment_id     = var.compartment_ocid
   kubernetes_version = var.kubernetes_version
   name               = "homelab"
-vcn_id             = oci_core_vcn.oke_vcn.id
+  vcn_id             = oci_core_vcn.oke_vcn.id
 
   endpoint_config {
-    subnet_id = oci_core_subnet.api_endpoint_subnet.id
+    is_public_ip_enabled = true
+    subnet_id            = oci_core_subnet.api_endpoint_subnet.id
   }
 
   options {
@@ -36,6 +37,11 @@ resource "oci_containerengine_node_pool" "oke_node_pool" {
   name               = "ampere-free-tier"
   node_shape         = "VM.Standard.A1.Flex"
 
+  node_shape_config {
+    ocpus         = 2
+    memory_in_gbs = 12
+  }
+
   node_config_details {
     placement_configs {
       availability_domain = "JZGC:EU-PARIS-1-AD-1"
@@ -48,4 +54,25 @@ resource "oci_containerengine_node_pool" "oke_node_pool" {
     image_id    = local.selected_image_id
     source_type = "IMAGE"
   }
+}
+
+resource "null_resource" "gateway_api_crds" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/${var.gateway_crds_version}/standard-install.yaml"
+  }
+  depends_on = [oci_containerengine_cluster.oke_cluster]
+}
+
+resource "null_resource" "traefik_crds" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/${var.traefik_crds_version}/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml"
+  }
+  depends_on = [oci_containerengine_cluster.oke_cluster]
+}
+
+resource "null_resource" "traefik_rbac" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/${var.traefik_crds_version}/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml"
+  }
+  depends_on = [null_resource.traefik_crds]
 }

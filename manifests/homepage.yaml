@@ -20,32 +20,32 @@ data:
   services.yaml: |
     - About Me:
         - LinkedIn:
-              href: https://www.linkedin.com/in/adrian-covaciu
-              icon: linkedin.png
+            href: https://www.linkedin.com/in/adrian-covaciu
+            icon: linkedin.png
         - Credly:
-              href: https://www.credly.com/users/adrian-covaciu
-              icon: https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/credly.svg
+            href: https://www.credly.com/users/adrian-covaciu
+            icon: https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/credly.svg
     - Projects:
         - Homelab Repository:
-              href: https://github.com/Adrian-Covaciu/homelab
-              icon: github.png
+            href: https://github.com/Adrian-Covaciu/homelab
+            icon: github.png
         - Hivebox Repository:
-              href: https://github.com/Adrian-Covaciu/devops-hands-on-project-hivebox
-              icon: github.png
+            href: https://github.com/Adrian-Covaciu/devops-hands-on-project-hivebox
+            icon: github.png
     - Deployment & Monitoring:
         - ArgoCD:
-              href: https://argocd.acovaciu.com
-              icon: argo-cd.png
+            href: https://argocd.acovaciu.com
+            icon: argo-cd.png
         - Grafana:
-              href: https://grafana.acovaciu.com
-              icon: grafana.png
+            href: https://grafana.acovaciu.com
+            icon: grafana.png
         - Kyverno Policies:
-              href: https://policy-reporter.acovaciu.com
-              icon: kyverno.png
+            href: https://policy-reporter.acovaciu.com
+            icon: kyverno.png
     - Homelab Infrastructure:
         - Unifi:
-              href: https://unifi.ui.com/consoles/0CEA1487257500000000088C04DD000000000900B60600000000674DB356:50129806/network/default/dashboard
-              icon: unifi.png
+            href: https://unifi.ui.com/consoles/0CEA1487257500000000088C04DD000000000900B60600000000674DB356:50129806/network/default/dashboard
+            icon: unifi.png
   widgets.yaml: |
     - kubernetes:
         cluster:
@@ -159,7 +159,6 @@ spec:
             name: homepage
         - name: logs
           emptyDir: {}
-
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -168,33 +167,32 @@ metadata:
   namespace: homepage
 spec:
   hostnames:
-  - homepage.acovaciu.com
+    - "homepage.acovaciu.com"
   parentRefs:
-  - group: gateway.networking.k8s.io
-    kind: Gateway
-    name: traefik-gateway
-    namespace: traefik-ingress
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: traefik-gateway
+      namespace: traefik-ingress
+      sectionName: websecure
   rules:
-  - backendRefs:
-    - group: ""
-      kind: Service
-      name: homepage
-      port: 3000
-      weight: 1
-    matches:
-    - path:
-        type: PathPrefix
-        value: /
-
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: homepage
+          port: 3000
+          weight: 1
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: homepage
+  namespace: homepage
   labels:
     app.kubernetes.io/name: homepage
-secrets:
-  - name: homepage
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

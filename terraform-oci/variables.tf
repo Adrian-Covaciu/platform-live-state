@@ -58,7 +58,6 @@ variable "gateway_namespace" {
 ### OKE Cluster
 variable "cluster_id" {
   type        = string
-  default     = "ocid1.cluster.oc1.eu-paris-1.aaaaaaaaug7blqqsr5wjw35yrceiegf3k6ylrmxr2q7a7c623czde334ksta"
   description = "OKE Cluster ID"
 }
 
@@ -69,8 +68,18 @@ variable "public_ip_access" {
 }
 
 variable "kubernetes_version" {
-  type = string
+  type    = string
   default = "v1.36.1"
+}
+
+variable "gateway_crds_version" {
+  type = string
+  default = "v1.6.1"
+}
+
+variable "traefik_crds_version" {
+  type = string
+  default = "v3.7"
 }
 
 ### Okta
